@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) NSArray *sorts;
 @property (nonatomic, strong) DOPDropDownMenu *menu;
+@property (nonatomic, assign) NSInteger numberOfMenus;
 @end
 
 @implementation TableViewController
@@ -31,7 +32,8 @@ static NSString *reuseIdentifier = @"ReuseIt";
     CGFloat menuHeight = 44.0;
     // 添加下拉菜单
     self.menu = [[DOPDropDownMenu alloc] initWithOrigin:CGPointMake(0, 64) andHeight:menuHeight];
-    self.menu.placeholderMenuTitles = @[@"分类", @"地区", @"排序"];
+    self.menu.placeholderMenuTitles = @[@"分类", @"地区"];
+    self.numberOfMenus = [self.menu.placeholderMenuTitles count];
     self.menu.delegate = self;
     self.menu.dataSource = self;
     [self.navigationController.view addSubview:self.menu];
@@ -56,6 +58,7 @@ static NSString *reuseIdentifier = @"ReuseIt";
     self.hostels = @[@"经济酒店",@"商务酒店",@"连锁酒店",@"度假酒店",@"公寓酒店", @"情趣酒店"];
     self.areas = @[@"全城",@"芙蓉区",@"雨花区",@"天心区",@"开福区",@"岳麓区"];
     self.sorts = @[@"默认排序",@"离我最近",@"好评优先",@"人气优先",@"最新发布"];
+    self.numberOfMenus = 3;
     [self.menu reloadData];
     dispatch_after(10, dispatch_get_main_queue(), ^{
         [self.refreshControl endRefreshing];
@@ -129,7 +132,7 @@ static NSString *reuseIdentifier = @"ReuseIt";
 
 - (NSInteger)numberOfColumnsInMenu:(DOPDropDownMenu *)menu
 {
-    return 3;
+    return self.numberOfMenus;
 }
 
 - (NSInteger)menu:(DOPDropDownMenu *)menu numberOfRowsInColumn:(NSInteger)column

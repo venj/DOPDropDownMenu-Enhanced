@@ -153,13 +153,6 @@ struct {
         return;
     }
     _dataSource = dataSource;
-
-    //configure view
-    if ([_dataSource respondsToSelector:@selector(numberOfColumnsInMenu:)]) {
-        _numOfMenu = [_dataSource numberOfColumnsInMenu:self];
-    } else {
-        _numOfMenu = 1;
-    }
     
     _dataSourceFlags.numberOfRowsInColumn = [_dataSource respondsToSelector:@selector(menu:numberOfRowsInColumn:)];
     _dataSourceFlags.numberOfItemsInRow = [_dataSource respondsToSelector:@selector(menu:numberOfItemsInRow:column:)];
@@ -167,6 +160,17 @@ struct {
     _dataSourceFlags.titleForItemsInRowAtIndexPath = [_dataSource respondsToSelector:@selector(menu:titleForItemsInRowAtIndexPath:)];
     
     _bottomShadow.hidden = NO;
+    [self setupMainMemu];
+}
+
+- (void)setupMainMemu {
+    //configure view
+    if ([_dataSource respondsToSelector:@selector(numberOfColumnsInMenu:)]) {
+        _numOfMenu = [_dataSource numberOfColumnsInMenu:self];
+    } else {
+        _numOfMenu = 1;
+    }
+    
     CGFloat textLayerInterval = self.frame.size.width / ( _numOfMenu * 2);
     CGFloat separatorLineInterval = self.frame.size.width / _numOfMenu;
     CGFloat bgLayerInterval = self.frame.size.width / _numOfMenu;
@@ -207,7 +211,7 @@ struct {
             CAShapeLayer *separator = [self createSeparatorLineWithColor:self.separatorColor andPosition:separatorPosition];
             [self.layer addSublayer:separator];
         }
-       
+        
         
     }
     _titles = [tempTitles copy];
@@ -738,6 +742,7 @@ struct {
         }];
     }
     
+    [self setupMainMemu];
     [self.leftTableView reloadData];
     [self.rightTableView reloadData];
 }
