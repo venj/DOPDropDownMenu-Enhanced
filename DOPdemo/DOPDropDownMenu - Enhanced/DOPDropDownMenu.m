@@ -8,6 +8,7 @@
 //
 
 #import "DOPDropDownMenu.h"
+#import "UIBezierPath+Image.h"
 
 @implementation DOPIndexPath
 - (instancetype)initWithColumn:(NSInteger)column row:(NSInteger)row {
@@ -66,7 +67,6 @@ struct {
     unsigned int numberOfItemsInRow :1;
     unsigned int titleForRowAtIndexPath :1;
     unsigned int titleForItemsInRowAtIndexPath :1;
-    
 }_dataSourceFlags;
 }
 
@@ -81,6 +81,10 @@ struct {
 @property (nonatomic, strong) UIImageView *buttomImageView; // 底部imageView
 @property (nonatomic, weak) UIView *bottomShadow;
 
+//generated images
+@property (nonatomic, strong) UIImage *handleImage;
+@property (nonatomic, strong) UIImage *indicatorImage;
+@property (nonatomic, strong) UIImage *highlightIndicatorImage;
 //data source
 @property (nonatomic, copy) NSArray *array;
 //layers array
@@ -191,7 +195,7 @@ struct {
         [self.layer addSublayer:title];
         [tempTitles addObject:title];
         //indicator
-        CAShapeLayer *indicator = [self createIndicatorWithColor:self.indicatorColor andPosition:CGPointMake((i + 1)*separatorLineInterval - 10, self.frame.size.height / 2)];
+        CAShapeLayer *indicator = [self createIndicatorWithColor:self.indicatorColor andPosition:CGPointMake((i + 1)*separatorLineInterval - 15, self.frame.size.height / 2)];
         [self.layer addSublayer:indicator];
         [tempIndicators addObject:indicator];
         
@@ -227,6 +231,7 @@ struct {
         //lefttableView init
         _leftTableView = [[UITableView alloc] initWithFrame:CGRectMake(origin.x, self.frame.origin.y + self.frame.size.height, self.frame.size.width/2, 0) style:UITableViewStylePlain];
         _leftTableView.rowHeight = kTableViewCellHeight;
+        _leftTableView.tableFooterView = [UIView new];
         _leftTableView.dataSource = self;
         _leftTableView.delegate = self;
         _leftTableView.separatorColor = kSeparatorColor;
@@ -235,6 +240,7 @@ struct {
         //righttableView init
         _rightTableView = [[UITableView alloc] initWithFrame:CGRectMake(origin.x + self.frame.size.width/2, self.frame.origin.y + self.frame.size.height, self.frame.size.width/2, 0) style:UITableViewStylePlain];
         _rightTableView.rowHeight = kTableViewCellHeight;
+        _rightTableView.tableFooterView = [UIView new];
         _rightTableView.dataSource = self;
         _rightTableView.delegate = self;
         _rightTableView.separatorColor = kSeparatorColor;
@@ -242,7 +248,10 @@ struct {
         //_rightTableView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
         
         _buttomImageView = [[UIImageView alloc]initWithFrame:CGRectMake(origin.x, self.frame.origin.y + self.frame.size.height, self.frame.size.width, kButtomImageViewHeight)];
-        _buttomImageView.image = [UIImage imageNamed:@"icon_chose_bottom"];
+        _buttomImageView.backgroundColor = [UIColor whiteColor];
+        _buttomImageView.contentMode = UIViewContentModeCenter;
+        _buttomImageView.image = [self createHandleImageWithColor:[UIColor grayColor]];
+        
         
         //self tapped
         self.backgroundColor = [UIColor whiteColor];
@@ -338,6 +347,54 @@ struct {
     layer.position = point;
     
     return layer;
+}
+
+- (UIImage *)createArrowImageWithColor:(UIColor *)color {
+    //// Path drawing
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    [path moveToPoint:CGPointMake(2.0, 2.0)];
+    [path addLineToPoint:CGPointMake(6.0, 6.0)];
+    [path addLineToPoint:CGPointMake(2.0, 10.0)];
+    path.lineCapStyle = kCGLineCapRound;
+    path.lineJoinStyle = kCGLineJoinRound;
+    path.lineWidth = 2;
+    
+    UIImage *image = [path strokeImageWithColor:color];
+    return image;
+}
+
+- (UIImage *)createHandleImageWithColor:(UIColor *)color {
+    //// Path drawing
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    [path moveToPoint:CGPointMake(20, 20)];
+    [path addLineToPoint:CGPointMake(46, 20)];
+    path.lineCapStyle = kCGLineCapRound;
+    path.lineWidth = 6;
+    
+    UIImage *image = [path strokeImageWithColor:color];
+    return image;
+}
+
+- (UIImage *)handleImage {
+    if (!_handleImage) {
+        _handleImage = [self createHandleImageWithColor:[UIColor grayColor]];
+    }
+    return _handleImage;
+}
+
+- (UIImage *)indicatorImage {
+    if (!_indicatorImage) {
+        _indicatorImage = [self createHandleImageWithColor:[UIColor blackColor]];
+    }
+    return _indicatorImage;
+}
+
+- (UIImage *)highlightIndicatorImage {
+    if (!_highlightIndicatorImage) {
+        _highlightIndicatorImage = [self createHandleImageWithColor:[UIColor orangeColor]];
+    }
+    
+    return _highlightIndicatorImage;
 }
 
 - (CGSize)calculateTitleSizeWithString:(NSString *)string
@@ -579,7 +636,7 @@ struct {
         }
         
         if (_dataSourceFlags.numberOfItemsInRow && [_dataSource menu:self numberOfItemsInRow:indexPath.row column:_currentSelectedMenudIndex]> 0){
-            cell.accessoryView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"icon_chose_arrow_nor"] highlightedImage:[UIImage imageNamed:@"icon_chose_arrow_sel"]];
+            cell.accessoryView = [[UIImageView alloc]initWithImage:[self createArrowImageWithColor:[UIColor blackColor]] highlightedImage:[self createArrowImageWithColor:[UIColor orangeColor]]];
         } else {
             cell.accessoryView = nil;
         }
@@ -666,6 +723,7 @@ struct {
     }];
 
 }
+
 
 
 
