@@ -17,6 +17,7 @@
 @property (nonatomic, strong) NSArray *areas;
 
 @property (nonatomic, strong) NSArray *sorts;
+@property (nonatomic, strong) DOPDropDownMenu *menu;
 @end
 
 @implementation TableViewController
@@ -27,21 +28,13 @@ static NSString *reuseIdentifier = @"ReuseIt";
     [super viewDidLoad];
     self.title = @"DOPDropDownMenu";
     
-    // 数据
-    self.classifys = @[@"美食",@"今日新单",@"电影",@"酒店"];
-    self.cates = @[@"自助餐",@"快餐",@"火锅",@"日韩料理",@"西餐",@"烧烤小吃"];
-    self.movices = @[@"内地剧",@"港台剧",@"英美剧"];
-    self.hostels = @[@"经济酒店",@"商务酒店",@"连锁酒店",@"度假酒店",@"公寓酒店", @"情趣酒店"];
-    self.areas = @[@"全城",@"芙蓉区",@"雨花区",@"天心区",@"开福区",@"岳麓区"];
-    self.sorts = @[@"默认排序",@"离我最近",@"好评优先",@"人气优先",@"最新发布"];
-    
     CGFloat menuHeight = 44.0;
     // 添加下拉菜单
-    DOPDropDownMenu *menu = [[DOPDropDownMenu alloc] initWithOrigin:CGPointMake(0, 64) andHeight:menuHeight];
-    
-    menu.delegate = self;
-    menu.dataSource = self;
-    [self.navigationController.view addSubview:menu];
+    self.menu = [[DOPDropDownMenu alloc] initWithOrigin:CGPointMake(0, 64) andHeight:menuHeight];
+    self.menu.placeholderMenuTitles = @[@"分类", @"地区", @"排序"];
+    self.menu.delegate = self;
+    self.menu.dataSource = self;
+    [self.navigationController.view addSubview:self.menu];
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:reuseIdentifier];
     self.tableView.contentInset = UIEdgeInsetsMake(menuHeight, 0.0, 0.0, 0.0);
@@ -56,11 +49,19 @@ static NSString *reuseIdentifier = @"ReuseIt";
 }
 
 - (void)refreshContent:(id)sender {
-    NSLog(@"Content refreshed.");
+    // 数据
+    self.classifys = @[@"美食",@"今日新单",@"电影",@"酒店"];
+    self.cates = @[@"自助餐",@"快餐",@"火锅",@"日韩料理",@"西餐",@"烧烤小吃"];
+    self.movices = @[@"内地剧",@"港台剧",@"英美剧"];
+    self.hostels = @[@"经济酒店",@"商务酒店",@"连锁酒店",@"度假酒店",@"公寓酒店", @"情趣酒店"];
+    self.areas = @[@"全城",@"芙蓉区",@"雨花区",@"天心区",@"开福区",@"岳麓区"];
+    self.sorts = @[@"默认排序",@"离我最近",@"好评优先",@"人气优先",@"最新发布"];
+    [self.menu reloadData];
     dispatch_after(10, dispatch_get_main_queue(), ^{
         [self.refreshControl endRefreshing];
     });
 }
+
 
 #pragma mark - Table view data source
 

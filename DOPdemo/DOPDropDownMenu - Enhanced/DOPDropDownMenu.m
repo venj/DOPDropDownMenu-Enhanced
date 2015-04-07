@@ -21,7 +21,7 @@
     return self;
 }
 
-- (instancetype)initWithColumn:(NSInteger)column row:(NSInteger)row tem:(NSInteger)item {
+- (instancetype)initWithColumn:(NSInteger)column row:(NSInteger)row item:(NSInteger)item {
     self = [self initWithColumn:column row:row];
     if (self) {
         _item = item;
@@ -36,7 +36,7 @@
 
 + (instancetype)indexPathWithCol:(NSInteger)col row:(NSInteger)row item:(NSInteger)item
 {
-    return [[self alloc]initWithColumn:col row:row tem:item];
+    return [[self alloc] initWithColumn:col row:row item:item];
 }
 
 @end
@@ -190,7 +190,9 @@ struct {
         }else {
             titleString =[_dataSource menu:self titleForRowAtIndexPath:[DOPIndexPath indexPathWithCol:i row:0]];
         }
-
+        
+        if (!titleString) { titleString = self.placeholderMenuTitles[i]; }
+        
         CATextLayer *title = [self createTextLayerWithNSString:titleString withColor:self.textColor andPosition:titlePosition];
         [self.layer addSublayer:title];
         [tempTitles addObject:title];
@@ -377,21 +379,21 @@ struct {
 
 - (UIImage *)handleImage {
     if (!_handleImage) {
-        _handleImage = [self createHandleImageWithColor:[UIColor grayColor]];
+        _handleImage = [self createHandleImageWithColor:[self indicatorColor]];
     }
     return _handleImage;
 }
 
 - (UIImage *)indicatorImage {
     if (!_indicatorImage) {
-        _indicatorImage = [self createHandleImageWithColor:[UIColor blackColor]];
+        _indicatorImage = [self createHandleImageWithColor:[self textColor]];
     }
     return _indicatorImage;
 }
 
 - (UIImage *)highlightIndicatorImage {
     if (!_highlightIndicatorImage) {
-        _highlightIndicatorImage = [self createHandleImageWithColor:[UIColor orangeColor]];
+        _highlightIndicatorImage = [self createHandleImageWithColor:[self textSelectedColor]];
     }
     
     return _highlightIndicatorImage;
@@ -413,7 +415,9 @@ struct {
     CGPoint touchPoint = [paramSender locationInView:self];
     //calculate index
     NSInteger tapIndex = touchPoint.x / (self.frame.size.width / _numOfMenu);
- 
+    
+    // Prevent menu to show if only contains one menu item
+    if ([_dataSource menu:self numberOfRowsInColumn:tapIndex] == 1) { return; }
     for (int i = 0; i < _numOfMenu; i++) {
         if (i != tapIndex) {
             [self animateIndicator:_indicators[i] Forward:NO complete:^{
@@ -724,6 +728,19 @@ struct {
 
 }
 
+- (void)reloadData {
+    for (int i = 0; i < self.numOfMenu; i++) {
+        DOPIndexPath *indexPath = [[DOPIndexPath alloc] initWithColumn:i row:0];
+        CATextLayer *title = (CATextLayer *)_titles[i];
+        title.string = [self.dataSource menu:self titleForRowAtIndexPath:indexPath];
+        [self animateIdicator:_indicators[i] background:_backGroundView tableView:_leftTableView title:_titles[i] forward:NO complecte:^{
+            _show = NO;
+        }];
+    }
+    
+    [self.leftTableView reloadData];
+    [self.rightTableView reloadData];
+}
 
 
 

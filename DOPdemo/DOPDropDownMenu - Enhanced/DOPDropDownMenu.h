@@ -83,6 +83,7 @@
 @property (nonatomic, assign) NSInteger fontSize;           // 字体大小
 // 当有二级列表item时，点击row 是否调用点击代理方法
 @property (nonatomic, assign) BOOL isClickHaveItemValid;
+@property (nonatomic, copy) NSArray *placeholderMenuTitles;
 
 /**
  *  the width of menu will be set to screen width defaultly
@@ -99,7 +100,7 @@
 
 // 创建menu 第一次显示 不会调用点击代理，这个手动调用
 - (void)selectDefalutIndexPath;
-
+- (void)reloadData;
 @end
 
 // 版权属于原作者
