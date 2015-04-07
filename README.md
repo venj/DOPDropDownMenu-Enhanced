@@ -62,3 +62,16 @@ This enhanced version includes beautiful improvements to the interface, double t
 - (void)menu:(DOPDropDownMenu *)menu didSelectRowAtIndexPath:(DOPIndexPath *)indexPath;
 @end
 ```
+
+# 本Fork加入的功能
+
+1. 增加了`placeholderMenuTitles`属性，用于在各数据项为空的情况下，显示一个可用的占位菜单；
+2. 增加了`reloadData`，能够动态加载菜单项目；
+3. 现在菜单数量也可以动态加载了；
+4. 去掉了图片引用，原项目中的图片被替换为由贝塞尔曲线生成的图片；
+5. 菜单列表继续拉动时不再显示的分隔符；
+6. 将菜单标题的三角指示左移了5pt。
+
+## 可能存在的问题
+
+- `placeholderMenuTitles`和`datasource`配合的可能还不太好；
