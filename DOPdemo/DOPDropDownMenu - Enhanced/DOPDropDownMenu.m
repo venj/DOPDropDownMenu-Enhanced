@@ -458,6 +458,27 @@ struct {
     //[(CALayer *)self.bgLayers[_currentSelectedMenudIndex] setBackgroundColor:[UIColor whiteColor].CGColor];
 }
 
+#pragma mark - Actions
+
+- (void)hideMenu {
+    if (_show) {
+        [self backgroundTapped:nil];
+    }
+}
+
+- (void)selectIndexPath:(DOPIndexPath *)indexPath {
+    _currentSelectedMenudIndex = indexPath.column;
+    _currentSelectedMenudRow = indexPath.row;
+    
+    CATextLayer *title = (CATextLayer *)_titles[_currentSelectedMenudIndex];
+    if (indexPath.item) {
+        title.string = [_dataSource menu:self titleForItemsInRowAtIndexPath:[DOPIndexPath indexPathWithCol:_currentSelectedMenudIndex row:_currentSelectedMenudRow item:indexPath.item]];
+    }
+    else {
+        title.string = [_dataSource menu:self titleForRowAtIndexPath:[DOPIndexPath indexPathWithCol:_currentSelectedMenudIndex row:indexPath.row]];
+    }
+}
+
 #pragma mark - animation method
 - (void)animateIndicator:(CAShapeLayer *)indicator Forward:(BOOL)forward complete:(void(^)())complete {
     [CATransaction begin];

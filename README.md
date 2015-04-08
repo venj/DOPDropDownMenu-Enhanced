@@ -71,6 +71,9 @@ This enhanced version includes beautiful improvements to the interface, double t
 4. 去掉了图片引用，原项目中的图片被替换为由贝塞尔曲线生成的图片；
 5. 菜单列表继续拉动时不再显示的分隔符；
 6. 将菜单标题的三角指示左移了5pt。
+7. 修正了某些并不长的菜单标题显示为“...”的问题。
+8. 增加了隐藏展开的菜单的方法。
+9. 增加了通过`indexPath`设定菜单标题的方法。
 
 ## 可能存在的问题
 

@@ -83,6 +83,7 @@
 @property (nonatomic, assign) NSInteger fontSize;           // 字体大小
 // 当有二级列表item时，点击row 是否调用点击代理方法
 @property (nonatomic, assign) BOOL isClickHaveItemValid;
+// 菜单标题占位
 @property (nonatomic, copy) NSArray *placeholderMenuTitles;
 
 /**
@@ -100,7 +101,12 @@
 
 // 创建menu 第一次显示 不会调用点击代理，这个手动调用
 - (void)selectDefalutIndexPath;
+// 手动选择某个IndexPath，用于初始选择菜单项。
+- (void)selectIndexPath:(DOPIndexPath *)indexPath;
+// 重新加载数据
 - (void)reloadData;
+// 用于在代码里隐藏展开的菜单
+- (void)hideMenu;
 @end
 
 // 版权属于原作者
