@@ -408,7 +408,7 @@ struct {
     //CGFloat fontSize = 14.0;
     NSDictionary *dic = @{NSFontAttributeName: [UIFont systemFontOfSize:_fontSize]};
     CGSize size = [string boundingRectWithSize:CGSizeMake(280, 0) options:NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:dic context:nil].size;
-    return size;
+    return CGSizeMake(ceil(size.width), ceil(size.height));
 }
 
 #pragma mark - gesture handle
